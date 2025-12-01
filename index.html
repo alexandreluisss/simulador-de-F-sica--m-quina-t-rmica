@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Máquina Térmica - ECI Cassiano Ribeiro Coutinho</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2a3c7c, #4a5cc7);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .school-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .school-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Brasão estilizado da escola */
+        .brasao {
+            imgs
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+        }
+        
+        .brasao-sigla {
+            font-size: 1.2em;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+        
+        .brasao-nome {
+            font-size: 0.5em;
+            line-height: 1;
+            opacity: 0.9;
+        }
+        
+        .school-info {
+            text-align: center;
+        }
+        
+        .school-name {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .project-name {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #12c2e9, #c471ed, #f64f59);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .simulator-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .engine-display {
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 400px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .control-group {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h2 {
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #ffcc00;
+        }
+        
+        .slider-container {
+            margin: 15px 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #aaccff;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #12c2e9, #c471ed);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .value-display {
+            text-align: center;
+            font-size: 1.1em;
+            margin-top: 5px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #12c2e9, #c471ed);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #4dffea;
+        }
+        
+        .engine-canvas-container {
+            width: 100%;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        #engineCanvas {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .cycle-steps {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            flex: 1;
+            margin: 0 5px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .step.active {
+            background: linear-gradient(45deg, #12c2e9, #c471ed);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(18, 194, 233, 0.4);
+        }
+        
+        .graph-container {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .graph-title {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #ffcc00;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: center;
+            justify-content: center;
+        }
+        
+        .carnot-graph-container {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        #carnotChart {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .graph-labels {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            font-family: Arial, sans-serif;
+        }
+        
+        .pressure-label {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #000;
+        }
+        
+        .volume-label {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #000;
+        }
+        
+        .process-label {
+            position: absolute;
+            font-size: 0.9em;
+            color: #000;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 4px 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+            min-width: 120px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 1100px) {
+            .simulator-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="school-header">
+            <div class="school-logo">
+                <div class="brasao">
+                    <div class="brasao-sigla">ECI</div>
+                    <div class="brasao-nome">CRC</div>
+                </div>
+            </div>
+            <div class="school-info">
+                <div class="school-name">ECI Cassiano Ribeiro Coutinho</div>
+                <div class="project-name">Laboratório Virtual de Termodinâmica</div>
+            </div>
+        </div>
+        
+        <header>
+            <h1><i class="fas fa-fire"></i> Simulador de Máquina Térmica</h1>
+            <p class="subtitle">Explore os princípios da termodinâmica e o ciclo de Carnot em tempo real com esta simulação interativa</p>
+        </header>
+        
+        <div class="simulator-container">
+            <div class="engine-display">
+                <h2><i class="fas fa-cogs"></i> Máquina Térmica em Ação</h2>
+                <div class="engine-canvas-container">
+                    <canvas id="engineCanvas" width="500" height="300"></canvas>
+                </div>
+                <div class="cycle-steps">
+                    <div class="step" id="step1"><i class="fas fa-thermometer-full"></i> Expansão Isotérmica</div>
+                    <div class="step" id="step2"><i class="fas fa-compress-arrows-alt"></i> Expansão Adiabática</div>
+                    <div class="step" id="step3"><i class="fas fa-thermometer-quarter"></i> Compressão Isotérmica</div>
+                    <div class="step" id="step4"><i class="fas fa-expand-arrows-alt"></i> Compressão Adiabática</div>
+                </div>
+                
+                <div class="graph-container">
+                    <div class="graph-title"><i class="fas fa-chart-line"></i> DIAGRAMA PRESSÃO-VOLUME - CICLO DE CARNOT</div>
+                    <div class="carnot-graph-container">
+                        <canvas id="carnotChart" width="600" height="350"></canvas>
+                        <div class="graph-labels">
+                            <div class="pressure-label">Pressão (P)</div>
+                            <div class="volume-label">Volume (V)</div>
+                            <div class="process-label" style="top: 15%; left: 5%; text-align: center;">Compressão<br>Adiabática</div>
+                            <div class="process-label" style="top: 15%; right: 5%; text-align: center;">Expansão<br>Adiabática</div>
+                            <div class="process-label" style="bottom: 25%; left: 5%; text-align: center;">Compressão<br>Isotérmica<br>(Fonte Fria T₂)</div>
+                            <div class="process-label" style="bottom: 25%; right: 5%; text-align: center;">Expansão<br>Isotérmica<br>(Fonte Quente T₁)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <h2><i class="fas fa-sliders-h"></i> Controles da Máquina</h2>
+                    
+                    <div class="slider-container">
+                        <label for="tempQuente"><i class="fas fa-temperature-high"></i> Temperatura da Fonte Quente (T₁)</label>
+                        <input type="range" id="tempQuente" min="300" max="1000" value="600">
+                        <div class="value-display" id="tempQuenteValue">600 K</div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="tempFria"><i class="fas fa-temperature-low"></i> Temperatura da Fonte Fria (T₂)</label>
+                        <input type="range" id="tempFria" min="200" max="500" value="300">
+                        <div class="value-display" id="tempFriaValue">300 K</div>
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label for="calorQuente"><i class="fas fa-fire"></i> Calor da Fonte Quente (Q₁)</label>
+                        <input type="range" id="calorQuente" min="1000" max="10000" value="4000" step="100">
+                        <div class="value-display" id="calorQuenteValue">4000 J</div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2><i class="fas fa-gamepad"></i> Controles de Simulação</h2>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="btnStart"><i class="fas fa-play"></i> Iniciar</button>
+                        <button id="btnPause"><i class="fas fa-pause"></i> Pausar</button>
+                        <button id="btnReset"><i class="fas fa-redo"></i> Reiniciar</button>
+                        <button id="btnSlow"><i class="fas fa-tachometer-alt"></i> Lentamente</button>
+                        <button id="btnFast"><i class="fas fa-bolt"></i> Rapidamente</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2><i class="fas fa-chart-bar"></i> Estatísticas da Máquina</h2>
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div><i class="fas fa-percentage"></i> Rendimento</div>
+                            <div class="stat-value" id="eficiencia">50.0%</div>
+                            <div>Eficiência de Carnot</div>
+                        </div>
+                        <div class="stat-card">
+                            <div><i class="fas fa-bolt"></i> Trabalho Realizado</div>
+                            <div class="stat-value" id="trabalho">2000 J</div>
+                            <div>por ciclo</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Desenvolvido para a ECI Cassiano Ribeiro Coutinho - Laboratório Virtual de Física</p>
+            <p>Simulador de Máquina Térmica e Ciclo de Carnot</p>
+        </div>
+    </div>
+
+    <script>
+        // Elementos do DOM
+        const tempQuenteSlider = document.getElementById('tempQuente');
+        const tempFriaSlider = document.getElementById('tempFria');
+        const calorQuenteSlider = document.getElementById('calorQuente');
+        const tempQuenteValue = document.getElementById('tempQuenteValue');
+        const tempFriaValue = document.getElementById('tempFriaValue');
+        const calorQuenteValue = document.getElementById('calorQuenteValue');
+        const eficienciaElement = document.getElementById('eficiencia');
+        const trabalhoElement = document.getElementById('trabalho');
+        const btnStart = document.getElementById('btnStart');
+        const btnPause = document.getElementById('btnPause');
+        const btnReset = document.getElementById('btnReset');
+        const btnSlow = document.getElementById('btnSlow');
+        const btnFast = document.getElementById('btnFast');
+        const engineCanvas = document.getElementById('engineCanvas');
+        const carnotChartCanvas = document.getElementById('carnotChart');
+        const ctx = engineCanvas.getContext('2d');
+        const carnotCtx = carnotChartCanvas.getContext('2d');
+        const steps = [
+            document.getElementById('step1'),
+            document.getElementById('step2'),
+            document.getElementById('step3'),
+            document.getElementById('step4')
+        ];
+
+        // Estado da simulação
+        let isRunning = false;
+        let currentStep = 0;
+        let animationId = null;
+        let speed = 1;
+        let time = 0;
+
+        // Parâmetros da máquina
+        let params = {
+            T1: 600,
+            T2: 300,
+            Q1: 4000,
+            n: 1
+        };
+
+        // Inicialização
+        function init() {
+            updateDisplays();
+            setupEventListeners();
+            drawEngine();
+            drawCarnotChart();
+            calculateThermodynamics();
+        }
+
+        function setupEventListeners() {
+            tempQuenteSlider.addEventListener('input', updateParameters);
+            tempFriaSlider.addEventListener('input', updateParameters);
+            calorQuenteSlider.addEventListener('input', updateParameters);
+            
+            btnStart.addEventListener('click', startSimulation);
+            btnPause.addEventListener('click', pauseSimulation);
+            btnReset.addEventListener('click', resetSimulation);
+            btnSlow.addEventListener('click', () => { speed = 0.5; });
+            btnFast.addEventListener('click', () => { speed = 2; });
+        }
+
+        function updateParameters() {
+            params.T1 = parseInt(tempQuenteSlider.value);
+            params.T2 = parseInt(tempFriaSlider.value);
+            params.Q1 = parseInt(calorQuenteSlider.value);
+            
+            updateDisplays();
+            calculateThermodynamics();
+            drawEngine();
+            drawCarnotChart();
+        }
+
+        function updateDisplays() {
+            tempQuenteValue.textContent = `${params.T1} K`;
+            tempFriaValue.textContent = `${params.T2} K`;
+            calorQuenteValue.textContent = `${params.Q1} J`;
+        }
+
+        function calculateThermodynamics() {
+            // Eficiência de Carnot
+            const eficienciaCarnot = (1 - params.T2/params.T1) * 100;
+            eficienciaElement.textContent = `${eficienciaCarnot.toFixed(1)}%`;
+            
+            // Trabalho realizado (W = Q1 - Q2)
+            // Q2 = Q1 * (T2/T1) para ciclo de Carnot
+            const Q2 = params.Q1 * (params.T2/params.T1);
+            const W = params.Q1 - Q2;
+            trabalhoElement.textContent = `${W.toFixed(0)} J`;
+        }
+
+        function drawEngine() {
+            // Limpar canvas
+            ctx.clearRect(0, 0, engineCanvas.width, engineCanvas.height);
+            
+            // Fundo do cilindro
+            ctx.fillStyle = 'rgba(30, 30, 60, 0.7)';
+            ctx.fillRect(100, 50, 250, 200);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(100, 50, 250, 200);
+            
+            // Posição do pistão baseada no tempo
+            const pistonY = 70 + Math.sin(time * 0.01) * 60;
+            
+            // Desenhar pistão
+            const pistonGradient = ctx.createLinearGradient(80, pistonY, 80, pistonY + 20);
+            pistonGradient.addColorStop(0, '#8a8aff');
+            pistonGradient.addColorStop(1, '#4a4ac7');
+            ctx.fillStyle = pistonGradient;
+            ctx.fillRect(80, pistonY, 290, 20);
+            
+            // Detalhes do pistão
+            ctx.fillStyle = 'rgba(200, 200, 255, 0.8)';
+            ctx.fillRect(80, pistonY, 290, 5);
+            ctx.fillRect(80, pistonY + 15, 290, 5);
+            
+            // Haste do pistão
+            ctx.fillStyle = 'rgba(180, 180, 220, 0.9)';
+            ctx.fillRect(210, pistonY + 20, 40, 180 - (pistonY - 50));
+            
+            // Moléculas de gás (efeito visual)
+            drawGasMolecules(pistonY);
+            
+            // Fonte quente (direita)
+            const hotGradient = ctx.createLinearGradient(370, 80, 370, 220);
+            hotGradient.addColorStop(0, '#ff3333');
+            hotGradient.addColorStop(1, '#cc0000');
+            ctx.fillStyle = hotGradient;
+            ctx.fillRect(370, 80, 50, 140);
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText('T₁', 382, 240);
+            ctx.fillText(`${params.T1}K`, 365, 260);
+            
+            // Fonte fria (esquerda)
+            const coldGradient = ctx.createLinearGradient(30, 80, 30, 220);
+            coldGradient.addColorStop(0, '#3399ff');
+            coldGradient.addColorStop(1, '#0066cc');
+            ctx.fillStyle = coldGradient;
+            ctx.fillRect(30, 80, 50, 140);
+            ctx.fillStyle = 'white';
+            ctx.fillText('T₂', 42, 240);
+            ctx.fillText(`${params.T2}K`, 35, 260);
+            
+            // Indicador de movimento
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '14px Arial';
+            ctx.fillText(`Velocidade: ${speed}x`, 180, 280);
+            
+            // Eixo e manivela
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(230, 250);
+            ctx.lineTo(230, 230);
+            ctx.stroke();
+            
+            // Disco da manivela
+            ctx.fillStyle = 'rgba(100, 100, 150, 0.8)';
+            ctx.beginPath();
+            ctx.arc(230, 230, 20, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Braço da manivela
+            const crankAngle = time * 0.02;
+            const crankX = 230 + Math.cos(crankAngle) * 15;
+            const crankY = 230 + Math.sin(crankAngle) * 15;
+            
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(230, 230);
+            ctx.lineTo(crankX, crankY);
+            ctx.stroke();
+            
+            // Conectar a haste do pistão
+            ctx.beginPath();
+            ctx.moveTo(crankX, crankY);
+            ctx.lineTo(230, pistonY + 20);
+            ctx.stroke();
+        }
+
+        function drawGasMolecules(pistonY) {
+            const moleculeCount = 20;
+            const chamberHeight = pistonY - 70;
+            
+            for (let i = 0; i < moleculeCount; i++) {
+                const x = 120 + Math.random() * 210;
+                const y = 70 + Math.random() * chamberHeight;
+                const radius = 3 + Math.random() * 3;
+                
+                // Cor baseada na temperatura
+                const tempFactor = (params.T1 - params.T2) / 700;
+                const red = 150 + tempFactor * 105;
+                const blue = 150 + (1 - tempFactor) * 105;
+                
+                ctx.fillStyle = `rgb(${red}, 100, ${blue})`;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Efeito de movimento
+                if (isRunning) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, 0.4)`;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(
+                        x + Math.sin(time * 0.05 + i) * 10,
+                        y + Math.cos(time * 0.05 + i) * 10
+                    );
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawCarnotChart() {
+            // Limpar canvas do gráfico
+            carnotCtx.clearRect(0, 0, carnotChartCanvas.width, carnotChartCanvas.height);
+            
+            // Fundo branco
+            carnotCtx.fillStyle = '#ffffff';
+            carnotCtx.fillRect(0, 0, carnotChartCanvas.width, carnotChartCanvas.height);
+            
+            // Desenhar eixos
+            carnotCtx.strokeStyle = '#000000';
+            carnotCtx.lineWidth = 2;
+            carnotCtx.beginPath();
+            // Eixo Y (Pressão)
+            carnotCtx.moveTo(80, 50);
+            carnotCtx.lineTo(80, 300);
+            // Eixo X (Volume)
+            carnotCtx.moveTo(80, 300);
+            carnotCtx.lineTo(520, 300);
+            carnotCtx.stroke();
+            
+            // Setas nos eixos
+            carnotCtx.fillStyle = '#000000';
+            // Seta eixo Y
+            carnotCtx.beginPath();
+            carnotCtx.moveTo(75, 55);
+            carnotCtx.lineTo(80, 45);
+            carnotCtx.lineTo(85, 55);
+            carnotCtx.fill();
+            // Seta eixo X
+            carnotCtx.beginPath();
+            carnotCtx.moveTo(515, 295);
+            carnotCtx.lineTo(525, 300);
+            carnotCtx.lineTo(515, 305);
+            carnotCtx.fill();
+            
+            // CORREÇÃO DO GRÁFICO - FORMATO CLÁSSICO DO CICLO DE CARNOT
+            const centerX = 300;
+            const centerY = 175;
+            const width = 200;
+            const height = 120;
+            
+            // Pontos A, B, C, D do ciclo - CORRIGIDOS
+            const points = {
+                A: { x: centerX - width/2, y: centerY + height/2 },
+                B: { x: centerX + width/2, y: centerY - height/2 },
+                C: { x: centerX + width/2, y: centerY + height/2 },
+                D: { x: centerX - width/2, y: centerY - height/2 }
+            };
+            
+            // Curvas do ciclo de Carnot - CORRIGIDAS
+            carnotCtx.strokeStyle = '#0000ff';
+            carnotCtx.lineWidth = 3;
+            carnotCtx.beginPath();
+            
+            // 1. Expansão isotérmica A→B (curva superior direita)
+            carnotCtx.moveTo(points.A.x, points.A.y);
+            for (let i = 0; i <= 50; i++) {
+                const progress = i / 50;
+                const x = points.A.x + (points.B.x - points.A.x) * progress;
+                // Curva isotérmica (hiperbólica)
+                const y = points.A.y - (points.A.y - points.B.y) * Math.pow(progress, 0.7);
+                carnotCtx.lineTo(x, y);
+            }
+            
+            // 2. Expansão adiabática B→C (curva direita para baixo)
+            carnotCtx.moveTo(points.B.x, points.B.y);
+            for (let i = 0; i <= 50; i++) {
+                const progress = i / 50;
+                const x = points.B.x;
+                const y = points.B.y + (points.C.y - points.B.y) * progress;
+                carnotCtx.lineTo(x, y);
+            }
+            
+            // 3. Compressão isotérmica C→D (curva inferior esquerda)
+            carnotCtx.moveTo(points.C.x, points.C.y);
+            for (let i = 0; i <= 50; i++) {
+                const progress = i / 50;
+                const x = points.C.x - (points.C.x - points.D.x) * progress;
+                // Curva isotérmica (hiperbólica)
+                const y = points.C.y - (points.C.y - points.D.y) * Math.pow(progress, 0.7);
+                carnotCtx.lineTo(x, y);
+            }
+            
+            // 4. Compressão adiabática D→A (curva esquerda para cima)
+            carnotCtx.moveTo(points.D.x, points.D.y);
+            for (let i = 0; i <= 50; i++) {
+                const progress = i / 50;
+                const x = points.D.x;
+                const y = points.D.y - (points.D.y - points.A.y) * progress;
+                carnotCtx.lineTo(x, y);
+            }
+            
+            carnotCtx.closePath();
+            carnotCtx.stroke();
+            
+            // Preencher área do ciclo com cor suave
+            carnotCtx.fillStyle = 'rgba(0, 100, 255, 0.1)';
+            carnotCtx.fill();
+            
+            // Desenhar pontos A, B, C, D - CORRIGIDOS
+            Object.entries(points).forEach(([label, point]) => {
+                carnotCtx.fillStyle = '#ff0000';
+                carnotCtx.beginPath();
+                carnotCtx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+                carnotCtx.fill();
+                
+                carnotCtx.fillStyle = '#000000';
+                carnotCtx.font = 'bold 16px Arial';
+                carnotCtx.fillText(label, point.x - 8, point.y - 10);
+            });
+            
+            // Ponto móvel indicando a posição atual no ciclo - CORRIGIDO
+            const cycleProgress = (time * 0.01) % 4;
+            let pointX, pointY;
+            
+            if (cycleProgress < 1) {
+                // Expansão isotérmica A→B
+                const progress = cycleProgress;
+                pointX = points.A.x + (points.B.x - points.A.x) * progress;
+                pointY = points.A.y - (points.A.y - points.B.y) * Math.pow(progress, 0.7);
+            } else if (cycleProgress < 2) {
+                // Expansão adiabática B→C
+                const progress = cycleProgress - 1;
+                pointX = points.B.x;
+                pointY = points.B.y + (points.C.y - points.B.y) * progress;
+            } else if (cycleProgress < 3) {
+                // Compressão isotérmica C→D
+                const progress = cycleProgress - 2;
+                pointX = points.C.x - (points.C.x - points.D.x) * progress;
+                pointY = points.C.y - (points.C.y - points.D.y) * Math.pow(progress, 0.7);
+            } else {
+                // Compressão adiabática D→A
+                const progress = cycleProgress - 3;
+                pointX = points.D.x;
+                pointY = points.D.y - (points.D.y - points.A.y) * progress;
+            }
+            
+            // Desenhar ponto de posição atual - CORRIGIDO
+            carnotCtx.fillStyle = '#00ff00';
+            carnotCtx.beginPath();
+            carnotCtx.arc(pointX, pointY, 8, 0, Math.PI * 2);
+            carnotCtx.fill();
+            
+            carnotCtx.strokeStyle = '#00ff00';
+            carnotCtx.lineWidth = 2;
+            carnotCtx.beginPath();
+            carnotCtx.arc(pointX, pointY, 12, 0, Math.PI * 2);
+            carnotCtx.stroke();
+        }
+
+        function animate() {
+            if (!isRunning) return;
+            
+            time += speed;
+            drawEngine();
+            drawCarnotChart();
+            updateCycleStep();
+            
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function updateCycleStep() {
+            steps.forEach(step => step.classList.remove('active'));
+            
+            // Atualizar passo baseado no tempo
+            currentStep = Math.floor((time * 0.01) % 4);
+            steps[currentStep].classList.add('active');
+        }
+
+        function startSimulation() {
+            if (!isRunning) {
+                isRunning = true;
+                animate();
+            }
+        }
+
+        function pauseSimulation() {
+            isRunning = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        }
+
+        function resetSimulation() {
+            pauseSimulation();
+            time = 0;
+            currentStep = 0;
+            steps.forEach(step => step.classList.remove('active'));
+            drawEngine();
+            drawCarnotChart();
+        }
+
+        // Iniciar automaticamente
+        init();
+        startSimulation();
+    </script>
+</body>
+</html>
